@@ -2,8 +2,8 @@ param([switch]$RequireArchitecture)
 $ErrorActionPreference = 'Stop'
 $projectRoot = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..')).Path
 $pairs = @(
-    @{ Source='assets\characters\atang.glb'; Target='unity\Assets\Art\Characters\atang.glb'; Required=$true },
-    @{ Source='assets\architecture\courtyard.glb'; Target='unity\Assets\Art\Architecture\courtyard.glb'; Required=[bool]$RequireArchitecture }
+    @{ Source='assets/characters/atang.glb'; Target='unity/Assets/Art/Characters/atang.glb'; Required=$true },
+    @{ Source='assets/architecture/courtyard.glb'; Target='unity/Assets/Art/Architecture/courtyard.glb'; Required=[bool]$RequireArchitecture }
 )
 $records = @()
 foreach ($pair in $pairs) {
@@ -21,6 +21,7 @@ foreach ($pair in $pairs) {
     if ($sourceHash -ne $targetHash) { throw "Copy hash mismatch: $targetPath" }
     $records += [pscustomobject]@{source=$pair.Source;target=$pair.Target;bytes=(Get-Item -LiteralPath $targetPath).Length;sha256=$targetHash}
 }
-$report = Join-Path $projectRoot 'tests\results\unity-asset-sync.json'
+$report = Join-Path $projectRoot 'tests/results/unity-asset-sync.json'
+New-Item -ItemType Directory -Path (Split-Path -Parent $report) -Force | Out-Null
 $records | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath $report -Encoding utf8
 $records | Format-Table -AutoSize

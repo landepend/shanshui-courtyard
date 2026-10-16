@@ -1,4 +1,17 @@
 import bpy, math
+from pathlib import Path
+
+def project_path(relative):
+    """Resolve from the script, an opened project .blend, or the working directory."""
+    for source in (globals().get('__file__'), bpy.data.filepath, str(Path.cwd())):
+        if not source:
+            continue
+        origin = Path(source).resolve()
+        for parent in (origin, *origin.parents):
+            if (parent / 'index.html').is_file() and (parent / 'assets').is_dir():
+                return str(parent / relative)
+    raise RuntimeError('Cannot locate the project. Open its .blend file or run the script by filename from this project.')
+
 from mathutils import Vector
 C = bpy.data.collections.get('ATANG_CHARACTER_V2')
 MASTER = bpy.data.objects.get('ATANG_Master')
@@ -241,7 +254,7 @@ for s in [-1,1]:
     for prefix in ['Iris','Pupil','EyeGlint','EyeGlintSmall']:
         o=bpy.data.objects.get('Atang_'+prefix+str(s))
         if o:o.scale.x*=1.22;o.scale.z*=1.22
-concept=bpy.data.images.load(r'D:\DesktopFile\game\shanshui-courtyard\assets\concepts\atang-turnaround-v1.png',check_existing=True)
+concept=bpy.data.images.load(project_path('assets/concepts/atang-turnaround-v1.png'),check_existing=True)
 concept.name='Atang_Concept_Turnaround';concept.use_fake_user=True;concept.pack()
 print('BODY_AND_CLOTH_COMPLETE',len(C.objects),'objects',sum(len(o.data.vertices) for o in C.objects if o.type=='MESH'),'vertices before consolidation')
 

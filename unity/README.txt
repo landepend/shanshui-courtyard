@@ -5,7 +5,7 @@
 这不是已完成的 Windows 游戏构建。
 
 1. Unity Hub 中安装 Unity 6 LTS 与 Windows Build Support。
-2. 通过 Hub Add Project 添加当前 unity 文件夹。ProjectVersion.txt 中的6000.0版本为准备阶段目标；应由实际安装的Unity6LTS升级并记录准确版本。
+2. 通过 Hub Add Project 添加当前 unity 文件夹。当前 ProjectVersion.txt 记录 6000.6.5f1；请按该版本导入，若主动改用其他版本，由 Editor 更新准确版本。
 3. 等待 Package Manager 完成依赖导入：
    MCP for Unity 10.3.0，固定提交 aa5fc638d623f56178d50329d9ad8c541a57fe66。
    Unity 官方 glTFast 6.19.0（要求Unity6000.0或更新），用于本地GLB的编辑器导入。
@@ -15,7 +15,9 @@
    菜单：山水楼阁 → 构建 Windows 游戏；输出到项目 dist\windows\ShanshuiCourtyard.exe。
 
 MCP配置
-Codex已注册 unity stdio 服务，独立venv与固定源码版本，遥测和云端生成工具已关闭。
+此前 Windows 环境已注册 unity stdio 服务；此注册不会随项目复制到其他电脑。
+可选工具 python3 tools/verify-unity-mcp.py 自动查找 PATH、Unix bin 或 Windows Scripts 中的服务，也可传 --server 路径。
+运行该工具的 Python 环境需要 mcp 包；缺失时会给出提示，不会改写旧验证记录。
 Unity打开本项目后：Window → MCP for Unity → Transport选择Stdio → Start Session。
 无需重新点击配置所有客户端，以免覆盖现有Codex条目。
 服务握手验证：tests/results/unity-mcp-verification.json。

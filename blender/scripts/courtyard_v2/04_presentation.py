@@ -1,4 +1,17 @@
 import bpy,math
+from pathlib import Path
+
+def project_path(relative):
+    """Resolve from the script, an opened project .blend, or the working directory."""
+    for source in (globals().get('__file__'), bpy.data.filepath, str(Path.cwd())):
+        if not source:
+            continue
+        origin = Path(source).resolve()
+        for parent in (origin, *origin.parents):
+            if (parent / 'index.html').is_file() and (parent / 'assets').is_dir():
+                return str(parent / relative)
+    raise RuntimeError('Cannot locate the project. Open its .blend file or run the script by filename from this project.')
+
 from mathutils import Vector
 scene=bpy.data.scenes['COURTYARD_V2'];bpy.context.window.scene=scene
 studio=bpy.data.collections.get('COURTYARD_PRESENTATION') or bpy.data.collections.new('COURTYARD_PRESENTATION')
@@ -28,9 +41,9 @@ plane.data.materials.append(m)
 try:scene.render.engine='BLENDER_EEVEE'
 except TypeError as e:print(e)
 scene.render.resolution_x=1400;scene.render.resolution_y=1000;scene.render.resolution_percentage=100
-scene.render.image_settings.file_format='PNG';scene.render.filepath='D:/DesktopFile/game/shanshui-courtyard/docs/screenshots/courtyard-blender-v2.png'
-im=bpy.data.images.load('D:/DesktopFile/game/shanshui-courtyard/assets/concepts/courtyard-atang-anime-v2.png',check_existing=True);im.pack();im.use_fake_user=True
+scene.render.image_settings.file_format='PNG';scene.render.filepath=project_path('docs/screenshots/courtyard-blender-v2.png')
+im=bpy.data.images.load(project_path('assets/concepts/courtyard-atang-anime-v2.png'),check_existing=True);im.pack();im.use_fake_user=True
 bpy.ops.render.render(write_still=True)
-bpy.ops.wm.save_as_mainfile(filepath='D:/DesktopFile/game/shanshui-courtyard/blender/Courtyard.blend')
+bpy.ops.wm.save_as_mainfile(filepath=project_path('blender/Courtyard.blend'))
 print('COURTYARD_PREVIEW_SAVED')
 

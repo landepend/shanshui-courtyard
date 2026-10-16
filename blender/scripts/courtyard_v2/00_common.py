@@ -1,11 +1,24 @@
 import bpy, math
+from pathlib import Path
+
+def project_path(relative):
+    """Resolve from the script, an opened project .blend, or the working directory."""
+    for source in (globals().get('__file__'), bpy.data.filepath, str(Path.cwd())):
+        if not source:
+            continue
+        origin = Path(source).resolve()
+        for parent in (origin, *origin.parents):
+            if (parent / 'index.html').is_file() and (parent / 'assets').is_dir():
+                return str(parent / relative)
+    raise RuntimeError('Cannot locate the project. Open its .blend file or run the script by filename from this project.')
+
 from mathutils import Vector
 
 # All design coordinates are x/elevation/z, matching the game. A rigid rotation
 # (x, -z, elevation) gives Blender Z-up; glTF export restores game Y-up.
 SCENE_NAME = 'COURTYARD_V2'
 COLLECTION_NAME = 'COURTYARD_ARCHITECTURE'
-OUT = 'D:/DesktopFile/game/shanshui-courtyard/'
+OUT = project_path('') + '/'
 B = {}
 PALETTE = {
     'wood': ('4B2C23', .78, 0), 'woodLight': ('76503B', .76, 0),

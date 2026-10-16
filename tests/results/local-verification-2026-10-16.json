@@ -1,0 +1,57 @@
+{
+  "checked_at": "2026-10-16T20:47:21.556991+08:00",
+  "environment": {
+    "os": "macOS-26.2-arm64-arm-64bit",
+    "chip": "Apple M1 Max",
+    "memory_gb": 64,
+    "metal_supported": true,
+    "disk_free_gb_at_check": 724.3
+  },
+  "unity": {
+    "project_editor_version": "m_EditorVersion: 6000.6.5f1",
+    "hardware_and_os_meet_basic_editor_requirements": true,
+    "requirements_source": "https://docs.unity.com/en-us/engine/6000.6/manual/get-started/install-and-upgrade/getting-started-installing-unity/system-requirements",
+    "editor_found": false,
+    "hub_found": false,
+    "search_scope": [
+      "PATH",
+      "/Applications",
+      "~/Applications",
+      "/opt",
+      "/Volumes",
+      "Spotlight",
+      "UnityHub editor registry"
+    ],
+    "mcp_server_found": false,
+    "editor_compilation_performed": false,
+    "play_mode_performed": false,
+    "windows_build_performed": false
+  },
+  "checks": {
+    "stdlib_regression_tests": {
+      "passed": 9,
+      "command": "python3 -m unittest discover -s tests -p 'test_*.py' -v"
+    },
+    "python_sources_parsed": 24,
+    "blender_path_resolvers_tested_without_blender": 11,
+    "source_javascript_syntax": "passed",
+    "embedded_javascript_syntax_and_imports": {
+      "passed": true,
+      "module_count": 10
+    },
+    "embedded_glbs_match_sources": true,
+    "unity_glb_copies_match_sources": true,
+    "zip_crc": "passed",
+    "package_from_outside_project": "passed",
+    "csharp_files_matching_previous_syntax_report": 8,
+    "csharp_syntax_rerun": false
+  },
+  "limitations": [
+    "Unity Editor, Hub, Blender and PowerShell are not installed in the checked locations; no runtime validation in those applications was performed.",
+    "Built-in browser security policy rejected file:// navigation; direct offline launch and interaction were not verified. Embedded resource checks do not substitute for browser execution."
+  ],
+  "outputs": [
+    "dist/shanshui-courtyard-single.html",
+    "dist/山水楼阁-Unity准备版.zip"
+  ]
+}

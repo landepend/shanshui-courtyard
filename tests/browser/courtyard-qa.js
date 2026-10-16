@@ -1,4 +1,4 @@
-async (page) => {
+async (page, options = {}) => {
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
   const state=()=>page.evaluate(()=>window.__courtyard.getState());
   const check=(x,msg)=>{if(!x)throw new Error(msg);};
@@ -7,7 +7,7 @@ async (page) => {
   const initial=await state();check(initial.tiles>5000,'Missing instanced roof tiles');
   await page.getByRole('button',{name:'☀ 白昼',exact:true}).click();check((await state()).mode==='day','Day mode failed');
   await page.getByRole('button',{name:'☾ 夜景',exact:true}).click();check((await state()).mode==='night','Night mode failed');
-  await page.screenshot({path:'D:/DesktopFile/game/shanshui-courtyard/docs/screenshots/preview-night.png'});
+  await page.screenshot({path:`${options.screenshotDir || 'tests/results/browser/screenshots'}/preview-night.png`});
   await page.getByRole('button',{name:'◒ 黄昏',exact:true}).click();
   await page.getByRole('button',{name:'正面',exact:true}).click();
   await page.waitForFunction(()=>Math.abs(window.__courtyard.getState().camera[0])<.03);
@@ -35,12 +35,12 @@ async (page) => {
   await page.waitForFunction(p=>Math.hypot(...window.__courtyard.getState().target.map((v,i)=>v-p[i]))>.05,beforePan.target);
   await page.getByRole('button',{name:'↺ 重置',exact:true}).click();
   await page.waitForFunction(()=>Math.abs(window.__courtyard.getState().camera[0]-24)<.03);
-  await page.screenshot({path:'D:/DesktopFile/game/shanshui-courtyard/docs/screenshots/preview-dusk.png'});
+  await page.screenshot({path:`${options.screenshotDir || 'tests/results/browser/screenshots'}/preview-dusk.png`});
   await page.setViewportSize({width:390,height:844});
   const mobile=await page.evaluate(()=>({width:innerWidth,scroll:document.documentElement.scrollWidth,toolbar:document.querySelector('.toolbar').getBoundingClientRect().toJSON()}));
   check(mobile.scroll<=mobile.width,'Mobile horizontal overflow');check(mobile.toolbar.left>=0&&mobile.toolbar.right<=390,'Mobile controls clipped');
   await page.getByRole('button',{name:'☾ 夜景',exact:true}).click();check((await state()).mode==='night','Mobile mode button failed');
-  await page.screenshot({path:'D:/DesktopFile/game/shanshui-courtyard/docs/screenshots/courtyard-mobile.png'});
+  await page.screenshot({path:`${options.screenshotDir || 'tests/results/browser/screenshots'}/courtyard-mobile.png`});
   await page.setViewportSize({width:1440,height:1000});await page.getByRole('button',{name:'◒ 黄昏',exact:true}).click();
   check(errors.length===0,'Runtime errors: '+errors.join(';'));
   return {passed:['day/dusk/night','front/bird/reset','raycast column selection','dougong inspector','mouse orbit','wheel zoom','right-button pan','mobile layout and controls'],initial,final:await state(),mobile,errors};

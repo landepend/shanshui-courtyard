@@ -2,7 +2,7 @@
 ====================
 
 主项目目录
-D:\DesktopFile\game\shanshui-courtyard\unity
+项目根目录下的 unity 文件夹（路径随项目移动，不依赖原电脑盘符）
 
 当前状态（2026-10-15）
 用户已选择 Unity 作为 Windows 游戏主引擎，Godot 草稿保存于 archive/godot-draft。

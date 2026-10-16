@@ -1,4 +1,17 @@
 import bpy, math
+from pathlib import Path
+
+def project_path(relative):
+    """Resolve from the script, an opened project .blend, or the working directory."""
+    for source in (globals().get('__file__'), bpy.data.filepath, str(Path.cwd())):
+        if not source:
+            continue
+        origin = Path(source).resolve()
+        for parent in (origin, *origin.parents):
+            if (parent / 'index.html').is_file() and (parent / 'assets').is_dir():
+                return str(parent / relative)
+    raise RuntimeError('Cannot locate the project. Open its .blend file or run the script by filename from this project.')
+
 from mathutils import Vector
 C = bpy.data.collections.get('ATANG_CHARACTER_V2')
 MASTER = bpy.data.objects.get('ATANG_Master')
@@ -119,8 +132,8 @@ rig.animation_data.action=bpy.data.actions['Idle'];bpy.context.scene.frame_set(1
 bpy.ops.object.select_all(action='DESELECT')
 for o in [rig,body,MASTER]:o.select_set(True)
 bpy.context.view_layer.objects.active=rig
-bpy.ops.export_scene.gltf(filepath='D:/DesktopFile/game/shanshui-courtyard/assets/characters/atang.glb',export_format='GLB',use_selection=True,export_animations=True,export_animation_mode='ACTIONS',export_anim_single_armature=True,export_skins=True,export_yup=True)
+bpy.ops.export_scene.gltf(filepath=project_path('assets/characters/atang.glb'),export_format='GLB',use_selection=True,export_animations=True,export_animation_mode='ACTIONS',export_anim_single_armature=True,export_skins=True,export_yup=True)
 bpy.ops.render.render(write_still=True)
-bpy.ops.wm.save_as_mainfile(filepath='D:/DesktopFile/game/shanshui-courtyard/blender/Atang.blend')
+bpy.ops.wm.save_as_mainfile(filepath=project_path('blender/Atang.blend'))
 print('SLEEVE_CAPS_CLOSED',len(body.data.vertices))
 

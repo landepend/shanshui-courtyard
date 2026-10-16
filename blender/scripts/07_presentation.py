@@ -1,4 +1,17 @@
 import bpy, math
+from pathlib import Path
+
+def project_path(relative):
+    """Resolve from the script, an opened project .blend, or the working directory."""
+    for source in (globals().get('__file__'), bpy.data.filepath, str(Path.cwd())):
+        if not source:
+            continue
+        origin = Path(source).resolve()
+        for parent in (origin, *origin.parents):
+            if (parent / 'index.html').is_file() and (parent / 'assets').is_dir():
+                return str(parent / relative)
+    raise RuntimeError('Cannot locate the project. Open its .blend file or run the script by filename from this project.')
+
 from mathutils import Vector
 scene=bpy.context.scene
 studio=bpy.data.collections.new('ATANG_PRESENTATION')
@@ -25,9 +38,9 @@ print('CAMERA_ENUMS',[i.identifier for i in bpy.types.Camera.bl_rna.properties['
 print('IMAGE_ENUMS',[i.identifier for i in scene.render.image_settings.bl_rna.properties['file_format'].enum_items])
 scene.render.resolution_x=900;scene.render.resolution_y=1100;scene.render.resolution_percentage=100
 scene.render.image_settings.file_format='PNG'
-scene.render.filepath='D:/DesktopFile/game/shanshui-courtyard/docs/screenshots/atang-blender.png'
+scene.render.filepath=project_path('docs/screenshots/atang-blender.png')
 rig=bpy.data.objects['Atang_Rig'];rig.animation_data.action=bpy.data.actions['Idle'];scene.frame_set(1)
 bpy.ops.render.render(write_still=True)
-bpy.ops.wm.save_as_mainfile(filepath='D:/DesktopFile/game/shanshui-courtyard/blender/Atang.blend')
+bpy.ops.wm.save_as_mainfile(filepath=project_path('blender/Atang.blend'))
 print('PRESENTATION_SAVED')
 

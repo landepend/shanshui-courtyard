@@ -1,4 +1,4 @@
-async (page) => {
+async (page, options = {}) => {
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
   const state = () => page.evaluate(() => window.__courtyard.getState());
@@ -16,7 +16,7 @@ async (page) => {
 
   await page.locator('[data-view="front"]').click();
   await page.waitForFunction(() => Math.abs(window.__courtyard.getState().camera[0]) < .03);
-  await page.screenshot({ path: 'D:/DesktopFile/game/shanshui-courtyard/docs/screenshots/architecture-front.png' });
+  await page.screenshot({ path: `${options.screenshotDir || 'tests/results/browser/screenshots'}/architecture-front.png` });
   await page.locator('[data-mode="day"]').click();
   check((await state()).mode === 'day', 'Daylight control failed');
   const dayGlow = (await state()).architecture.windowGlow;
@@ -24,7 +24,7 @@ async (page) => {
   const night = await state();
   check(night.mode === 'night' && night.architecture.windowGlow > dayGlow, 'Architecture night lighting did not update');
   check(night.architecture.windowLightMaterials > 0, 'No window paper material responded to night lighting');
-  await page.screenshot({ path: 'D:/DesktopFile/game/shanshui-courtyard/docs/screenshots/architecture-night.png' });
+  await page.screenshot({ path: `${options.screenshotDir || 'tests/results/browser/screenshots'}/architecture-night.png` });
   await page.locator('[data-mode="dusk"]').click();
   await page.locator('#reset').click();
   await page.waitForFunction(() => Math.abs(window.__courtyard.getState().camera[0] - 24) < .03);
@@ -34,7 +34,7 @@ async (page) => {
   await page.locator('#close-info').click();
   await page.locator('[data-view="bird"]').click();
   await page.waitForFunction(() => Math.abs(window.__courtyard.getState().camera[1] - 40) < .03);
-  await page.screenshot({ path: 'D:/DesktopFile/game/shanshui-courtyard/docs/screenshots/architecture-bird.png' });
+  await page.screenshot({ path: `${options.screenshotDir || 'tests/results/browser/screenshots'}/architecture-bird.png` });
 
   // A missing GLB must be visible to the player; no procedural fallback may impersonate it.
   await page.route('**/assets/architecture/courtyard.glb', route => route.abort('failed'));
@@ -43,7 +43,7 @@ async (page) => {
   const failed = await state();
   check(!failed.architecture.loaded && failed.architecture.meshes === 0, 'Missing GLB silently fell back to old architecture');
   check(await page.locator('#architecture-status[role="alert"]').isVisible(), 'Load error was not visibly reported');
-  await page.screenshot({ path: 'D:/DesktopFile/game/shanshui-courtyard/docs/screenshots/architecture-load-error.png' });
+  await page.screenshot({ path: `${options.screenshotDir || 'tests/results/browser/screenshots'}/architecture-load-error.png` });
   await page.unroute('**/assets/architecture/courtyard.glb');
   await page.reload();
   await page.waitForFunction(() => window.__courtyard?.getState().architecture.loaded, null, { timeout: 90000 });

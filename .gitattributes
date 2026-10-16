@@ -1,0 +1,22 @@
+* text=auto
+*.md text eol=lf
+*.txt text eol=lf
+*.js text eol=lf
+*.html text eol=lf
+*.py text eol=lf
+*.cs text eol=lf
+*.ps1 text eol=lf
+*.json text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.meta text eol=lf
+*.unity text eol=lf
+*.prefab text eol=lf
+*.asset text eol=lf
+*.glb binary
+*.blend binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.zip binary
+*.exe binary

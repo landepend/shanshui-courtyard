@@ -1,4 +1,4 @@
-async (page) => {
+async (page, options = {}) => {
   await page.waitForFunction(()=>window.__courtyard?.ready);
   const initial=await page.evaluate(()=>window.__courtyard.getState().explorer.position[2]);
   await page.keyboard.down('w');

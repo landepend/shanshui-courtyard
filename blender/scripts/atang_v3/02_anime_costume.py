@@ -1,4 +1,17 @@
 import bpy, math
+from pathlib import Path
+
+def project_path(relative):
+    """Resolve from the script, an opened project .blend, or the working directory."""
+    for source in (globals().get('__file__'), bpy.data.filepath, str(Path.cwd())):
+        if not source:
+            continue
+        origin = Path(source).resolve()
+        for parent in (origin, *origin.parents):
+            if (parent / 'index.html').is_file() and (parent / 'assets').is_dir():
+                return str(parent / relative)
+    raise RuntimeError('Cannot locate the project. Open its .blend file or run the script by filename from this project.')
+
 from mathutils import Vector
 C = bpy.data.collections.get('ATANG_CHARACTER_V2')
 MASTER = bpy.data.objects.get('ATANG_Master')
@@ -211,6 +224,6 @@ for v in body.data.vertices:
     if total>0:
         for g in valid:body.vertex_groups[g.group].add([v.index],g.weight/total,'REPLACE')
 print('ANIME_COSTUME_READY',len(body.data.vertices),len(body.data.materials))
-bpy.context.scene.render.filepath='D:/DesktopFile/game/shanshui-courtyard/docs/screenshots/atang-anime-v3.png'
+bpy.context.scene.render.filepath=project_path('docs/screenshots/atang-anime-v3.png')
 bpy.ops.render.render(write_still=True)
 

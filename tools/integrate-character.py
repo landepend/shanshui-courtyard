@@ -1,7 +1,11 @@
 from pathlib import Path
-root=Path(r'D:\DesktopFile\game\shanshui-courtyard')
+root=Path(__file__).resolve().parents[1]
 p=root/'src/explore.js'
 s=p.read_text(encoding='utf-8-sig')
+# Historical one-time migration: current projects have already integrated the GLB.
+if "import { createCharacter }" in s and '  const skin=' not in s:
+    print('Character integration already applied; no files changed.')
+    raise SystemExit(0)
 s=s.replace("import * as THREE from 'three';","import * as THREE from 'three';\nimport { createCharacter } from './character.js';")
 start=s.index('  const skin=')
 end=s.index("  const sc=document")
@@ -20,8 +24,4 @@ p.write_text(s,encoding='utf-8')
 p=root/'vendor/GLTFLoader.js'
 s=p.read_text(encoding='utf-8-sig').replace('../utils/BufferGeometryUtils.js','./BufferGeometryUtils.js')
 p.write_text(s,encoding='utf-8')
-for p in (root/'tests/browser').glob('*.js'):
-    s=p.read_text(encoding='utf-8-sig').replace('D:/Files/codex/2026-10-15/c-l/outputs/shanshui-courtyard/','D:/DesktopFile/game/shanshui-courtyard/docs/screenshots/').replace('D:/Files/codex/2026-10-15/c-l/work/','D:/DesktopFile/game/shanshui-courtyard/docs/screenshots/')
-    s=s.replace('timeout=10000','timeout=20000').replace('position[2]<11.1','position[2]<11.3')
-    p.write_text(s,encoding='utf-8')
 

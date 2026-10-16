@@ -1,4 +1,4 @@
-async (page) => {
+async (page, options = {}) => {
  const errors=[]; page.on('pageerror',e=>errors.push(e.message));
  await page.reload();
  await page.waitForFunction(()=>window.__courtyard?.getState().explorer.character.loaded);
@@ -18,7 +18,7 @@ async (page) => {
  await page.mouse.move(600,500);await page.mouse.down();
  await page.mouse.move(1385,500,{steps:20});await page.mouse.up();
  await page.mouse.wheel(0,-950);await page.waitForTimeout(900);
- await page.screenshot({path:'D:/DesktopFile/game/shanshui-courtyard/docs/screenshots/atang-in-game.png'});
+ await page.screenshot({path:`${options.screenshotDir || 'tests/results/browser/screenshots'}/atang-in-game.png`});
  check(errors.length===0,errors.join(';'));
  await page.getByRole('button',{name:'↺ 重置',exact:true}).click();
  return {passed:['GLB loaded','Idle','Walk','Run','stop to Idle','camera orbit and zoom'],walk:walk.character,run:run.character,errors};

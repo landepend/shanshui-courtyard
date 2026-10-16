@@ -1,9 +1,11 @@
-async (page) => {
+async (page, options = {}) => {
+ if (!options.singleFileUrl) throw new Error('Pass options.singleFileUrl as a file URL built with pathToFileURL.');
+ const returnUrl = page.url();
  const errors=[],remote=[];
  page.on('pageerror',e=>errors.push(e.message));
  await page.route(/^https?:/,route=>{remote.push(route.request().url());return route.abort();});
  try {
-  await page.goto('file:///D:/DesktopFile/game/shanshui-courtyard/dist/shanshui-courtyard-single.html');
+  await page.goto(options.singleFileUrl);
   await page.waitForFunction(()=>window.__courtyard?.getState().explorer.character.loaded);
   await page.keyboard.down('w');
   await page.waitForFunction(()=>window.__courtyard.getState().explorer.character.clip==='Walk');
@@ -17,6 +19,6 @@ async (page) => {
  } finally {
   await page.keyboard.up('w');
   await page.unroute(/^https?:/);
-  await page.goto('http://127.0.0.1:9729/');
+  await page.goto(returnUrl);
  }
 }

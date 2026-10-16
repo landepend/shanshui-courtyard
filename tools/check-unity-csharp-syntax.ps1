@@ -6,7 +6,7 @@ param(
 $ErrorActionPreference = 'Stop'
 $workspace = Split-Path -Parent $PSScriptRoot
 if ([string]::IsNullOrWhiteSpace($OutputPath)) {
-    $OutputPath = Join-Path $workspace 'tests\results\unity-csharp-syntax.json'
+    $OutputPath = Join-Path $workspace 'tests/results/unity-csharp-syntax.json'
 }
 $OutputPath = [System.IO.Path]::GetFullPath($OutputPath)
 
@@ -18,8 +18,8 @@ $csharpPath = Join-Path $PSHOME 'Microsoft.CodeAnalysis.CSharp.dll'
 $csharpAssembly = [System.Reflection.Assembly]::LoadFrom($csharpPath)
 
 $checkFiles = @(
-    Get-ChildItem -LiteralPath (Join-Path $workspace 'unity\Assets\Scripts') -Filter '*.cs' -Recurse
-    Get-ChildItem -LiteralPath (Join-Path $workspace 'unity\Assets\Editor') -Filter '*.cs'
+    Get-ChildItem -LiteralPath (Join-Path $workspace 'unity/Assets/Scripts') -Filter '*.cs' -Recurse
+    Get-ChildItem -LiteralPath (Join-Path $workspace 'unity/Assets/Editor') -Filter '*.cs'
 ) | Sort-Object FullName
 
 $results = foreach ($checkFile in $checkFiles) {
@@ -50,7 +50,7 @@ $report = [ordered]@{
     roslynAssemblyVersion = $csharpAssembly.GetName().Version.ToString()
     roslynAssemblyPath = $csharpPath
     parseLanguageVersion = [Microsoft.CodeAnalysis.CSharp.CSharpParseOptions]::Default.LanguageVersion.ToString()
-    invocationFromWorkspace = 'pwsh -NoProfile -File .\tools\check-unity-csharp-syntax.ps1'
+    invocationFromWorkspace = 'pwsh -NoProfile -File ./tools/check-unity-csharp-syntax.ps1'
     checkedFileCount = @($results).Count
     totalSyntaxErrors = [int]$totalErrors
     unityEditorCompilePerformed = $false

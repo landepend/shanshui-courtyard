@@ -6,8 +6,10 @@ Run each stage by concatenating common source and stage source in Blender MCP:
   01_body.py
   02_roofs.py
   03_gallery_export.py
-The calling coordinator alone operates Blender MCP. Script files never use
-open, exec, os, subprocess or dynamic callbacks; all geometry uses bpy data.
+The calling coordinator alone operates Blender MCP. Geometry scripts use bpy data; project paths resolve from the script filename,
+an opened project .blend file, or the working directory. For MCP execution without
+__file__, open blender/Courtyard.blend first or launch Blender in the project root.
+No machine-specific drive paths are required.
 
 Output:
   assets/architecture/courtyard.glb

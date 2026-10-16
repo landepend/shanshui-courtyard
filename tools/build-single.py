@@ -19,6 +19,7 @@ model=base64.b64encode((root/'assets/characters/atang.glb').read_bytes()).decode
 architecture=base64.b64encode((root/'assets/architecture/courtyard.glb').read_bytes()).decode('ascii')
 html=html.replace('<script type="module" src="./src/scene.js"></script>','<script>globalThis.__COURTYARD_GLB__="'+architecture+'";globalThis.__ATANG_GLB__="'+model+'";</script><script type="module" src="'+uri(scene)+'"></script>')
 out=root/'dist/shanshui-courtyard-single.html'
+out.parent.mkdir(parents=True, exist_ok=True)
 out.write_text(html,encoding='utf-8')
 assert './src/scene.js' not in html
 print('Built offline single HTML:',out, out.stat().st_size,'bytes')

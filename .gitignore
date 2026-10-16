@@ -40,3 +40,13 @@ node_modules/
 # Operating system files
 .DS_Store
 Thumbs.db
+
+# Temporary QA output; keep curated historical evidence in tests/results
+/tests/results/browser/
+/tests/results/checks/
+
+# Local editor state
+/.idea/
+/.vscode/
+*.user
+*.suo

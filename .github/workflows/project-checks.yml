@@ -1,0 +1,51 @@
+name: Project checks
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  PYTHONUTF8: '1'
+
+concurrency:
+  group: project-checks-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Checks (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          # Whitespace checks need the parent; depth 1 treats every file as new.
+          fetch-depth: 2
+      - uses: actions/setup-python@v7.0.0
+        with:
+          python-version: '3.9'
+      - uses: actions/setup-node@v7.1.0
+        with:
+          node-version: '24'
+      - name: Check project contracts and syntax
+        run: python tools/check-project.py
+      - name: Run unit tests
+        run: python -m unittest discover -s tests -p "test_*.py" -v
+      - name: Build Pages preview and check asset sizes
+        run: python tools/build-pages.py
+      - name: Parse Unity C# (not an Editor compile)
+        shell: pwsh
+        run: ./tools/check-unity-csharp-syntax.ps1 -OutputPath tests/results/checks/unity-csharp-syntax.json
+      - name: Build offline preview
+        if: runner.os == 'Linux'
+        run: python tools/build-single.py
+      - name: Check whitespace in the commit
+        run: git show --format= --check HEAD
